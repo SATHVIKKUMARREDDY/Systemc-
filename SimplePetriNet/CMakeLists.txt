@@ -13,13 +13,12 @@ include_directories(
 )
 
 # Add executable
-add_executable(uart_tlm
-    src/uart_tlm.cpp
-    src/sc_main.cpp
-    testbench/testbench.cpp
+add_executable(simplePetrinets
+    #src/main.cpp
+    src/hierarchicalPns.cpp
 )
 
 # Link SystemC library explicitly
-target_link_libraries(uart_tlm
+target_link_libraries(simplePetrinets
     PRIVATE $ENV{SYSTEMC_HOME}/lib-linux64/libsystemc.a
 )

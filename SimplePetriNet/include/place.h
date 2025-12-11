@@ -1,34 +1,45 @@
+#ifndef PLACE_H
+#define PLACE_H
+
 #include<iostream>
+#include <systemc>
 
 template <class T>
-SC_MODULE(placeInterface) : public sc_interface{
-
-
-    virtual void addTokens(T n) = 0; 
-    virtual void removeTokens(T n) = 0;
-    virtual T int testTokens() = 0;
+class placeInterface : public sc_core::sc_interface{
+  public :
+    virtual void addTokens() = 0; 
+    virtual void removeTokens() = 0;
+    virtual bool testTokens() = 0;
 
 };
 
-template <class T>
-SC_MODULE(place) : public placeInterface{
+template <class T, unsigned int Win=1, unsigned int Wout=1>
+class place : public placeInterface<T>, public sc_core::sc_module {
     T tockens;
-      SC_CTOR(place) : tockens(tockens =  0){
+  public :
+      place(sc_core::sc_module_name name, T initial_tokens =  0) : tockens(initial_tokens ){
          
       }
 
-      addTokens(T n){
-        tockens+=n;
+      void addTokens(){
+        tockens+= Win;
       }
 
-      removeTokens(T n){
-        if(n > tockens ) ;
-        tockens -= n;
+      void removeTokens(){
+        if(tockens >= Wout){
+          //sc_core::sc_report_handler::report(sc_core::SC_ERROR, "Not enough tokens to remove invlid operation");
+          tockens -= Wout;
+        }
+        else  {
+          SC_REPORT_ERROR(this->name(), "Not enough tokens to remove invalid operation");
+        }
 
       }
 
-      testTokens(){
-        return tockens;
+      bool testTokens(){
+        return tockens >= Wout;
 
       }
 };
+
+#endif
